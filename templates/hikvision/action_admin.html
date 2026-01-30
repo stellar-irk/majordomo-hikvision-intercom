@@ -16,6 +16,13 @@
     <div style="display: flex; flex-direction: row; gap: 8px;">
         <!--# Логотип. #-->
         <img src="../img/modules/hikvision.png"  width="30" height="30" />
+        <!--# Кнопка 'Добавить'. #-->
+        <button class="btn btn-default zm-btn" data-toggle="modal" data-target="#add-intercom">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7.99984 2.66663V13.3333M13.3332 7.99996L2.6665 7.99996" stroke="#424242" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span class="zm-mobile-hide"><#LANG_HIKVISION_ADD#></span>
+        </button>
     </div>
     <div style="display: flex; flex-direction: row; gap: 8px;">
         <!--# Кнопка 'Telegram'. #-->
@@ -50,3 +57,4 @@
 [#endif VIEW_MODE#]
 
 [#inc about.html#]
+[#inc add_intercom.html#]

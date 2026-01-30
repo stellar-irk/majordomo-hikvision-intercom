@@ -1,0 +1,88 @@
+<style>
+   .loading-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(255, 255, 255, 0.8);
+      display: none; /* Hidden by default */
+      justify-content: center;
+      align-items: center;
+   }
+
+   /* Example pure CSS spinner (can also use a GIF or Font Awesome icon) */
+   .spinner {
+      border: 8px solid #f3f3f3;
+      border-top: 8px solid #333;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+   }
+
+   @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+   }
+</style>
+<script type="text/javascript">
+   function checkIntercom() {
+      $("#loadingOverlay").css("display", "flex");
+      $("#check-intercom").attr("disabled", "disabled");
+      $.post("/ajax/hikvision.html?op=check", $("#hik-add-form").serialize())
+         .done(function (data, textStatus, jqXHR) {
+            data = JSON.parse(data);
+            if (data.error) {
+               $("#hik-alert").html(data.error);
+               $("#hik-alert").show();
+               $("#loadingOverlay").css("display", "none");
+               $("#check-intercom").removeAttr("disabled");
+            } else {
+               $("#hik-info").html(data.model + ' <#LANG_HIKVISION_FOUND#>');
+               $("#hik-alert").hide();
+               $("#hik-info").show();
+               $("#loadingOverlay").css("display", "none");
+               location.href="?pd=pz_&md=panel&inst=&action=hikvision";
+            }
+         });
+
+   }
+</script>
+<div class="modal fade" id="add-intercom" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title"><#LANG_HIKVISION_ADD#> Hikvision Intercom</h4>
+         </div>
+         <form id="hik-add-form">
+            <div class="modal-body">
+               <fieldset>
+                  <div class="form-group">
+                     <label for="hik-address" class="control-label"><#LANG_HIKVISION_ADDRESS#></label>
+                     <input id="hik-address" class="form-control" type="text" name="address" pattern="^(?>(\d|[1-9]\d{2}|1\d\d|2[0-4]\d|25[0-5])\.){3}(?1)$">
+                  </div>
+                  <div class="form-group">
+                     <label for="hik-username" class="control-label"><#LANG_HIKVISION_USERNAME#></label>
+                     <input id="hik-username" class="form-control" type="text" autocomplete="username" name="user_name">
+                  </div>
+                  <div class="form-group">
+                     <label for="hik-pass" class="control-label"><#LANG_HIKVISION_PASSWORD#></label>
+                     <input id="hik-pass" class="form-control" type="password" autocomplete="current-password" name="user_pass" class="input">
+                  </div>
+                  <div class="alert alert-danger" role="alert" id="hik-alert" style="display: none"></div>
+                  <div class="alert alert-success" role="alert" id="hik-info" style="display: none"></div>
+               </fieldset>
+               <div class="loading-overlay" id="loadingOverlay">
+                  <div class="spinner"></div>
+               </div>
+            </div>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-primary" id="check-intercom" onclick="checkIntercom();"><#LANG_HIKVISION_CHECK#></button>
+               <button type="button" class="btn btn-default" data-dismiss="modal"><#LANG_HIKVISION_CLOSE#></button>
+            </div>
+         </form>
+      </div>
+   </div>
+</div>

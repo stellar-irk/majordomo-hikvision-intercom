@@ -82,6 +82,11 @@ class hikvision extends module {
     function run() {
         global $session;
         $out=array();
+
+        if ($this->ajax == 1) {
+
+        }
+
         if ($this->action=='admin') {
             $this->admin($out);
         } else {
@@ -109,8 +114,30 @@ class hikvision extends module {
      * @access public
      */
     function usual(&$out) {
-        if ($this->view_mode == '') {
+        if ($this->ajax == 1) {
+            $op = htmlspecialchars($_GET['op']);
+            if ($op == 'check') {
+                $address = htmlspecialchars($_POST['address']);
+                $username = htmlspecialchars($_POST['user_name']);
+                $password = $_POST['user_pass'];
 
+                $intercom = $this->getDataFromIntercom('http://'.$address.'/ISAPI/System/deviceInfo', $username, $password);
+                if (!isset($intercom->error)) {
+                    $dbrecord = SQLSelectOne("select `ID` from `hikvision` where `ADDRESS`='".$address."'");
+                    if (isset($dbrecord['ID'])) {
+                        $intercom->error = LANG_HIKVISION_INTERCOM_EXISTS;
+                    } else {
+                        $dbrecord['MODEL'] = $intercom->model;
+                        $dbrecord['ADDRESS'] = $address;
+                        $dbrecord['USERNAME'] = $username;
+                        $dbrecord['PASSWORD'] = $password;
+
+                        SQLInsert('hikvision', $dbrecord);
+                    }
+                }
+                echo json_encode($intercom);
+                exit;
+            }
         }
     }
 
@@ -124,7 +151,60 @@ class hikvision extends module {
     function admin(&$out) {
         $this->getConfig();
 
-        $out['debug'] = 'DEBUG';
+        if ($this->view_mode == '') {
+            $r = SQLSelect("select * from `hikvision`");
+            for($i=0;$i<count($r);$i++) {
+                switch ($r[$i]['MODEL']) {
+                    case 'DS-KV6103-PE1(C)': $r[$i]['MODEL_IMG'] = '/templates/hikvision/model_img/DS-KV6103-PE1C.png';
+                        break;
+                    default: $r[$i]['MODEL_IMG'] = '/templates/hikvision/model_img/DEFAULT.png';
+                }
+            }
+            $out['debug'] = print_r($r, true);
+        }
+
+
+    }
+
+
+
+    /**
+     * getDataFromIntercom
+     *
+     * Get Data from url with Digest Auth
+     *
+     * @access public
+     */
+    function getDataFromIntercom($url, $username, $password, $method = 'GET'): StdClass {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Return the response as a string
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); // Follow redirects if any
+        curl_setopt($ch, CURLOPT_USERPWD, $username . ":" . $password); // Set username and password
+        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST); // Specify Digest authentication
+        switch ($method) {
+            case 'POST': curl_setopt($ch, CURLOPT_POST, true);
+                        break;
+            case 'PUT': curl_setopt($ch, CURLOPT_PUT, true);
+                break;
+        }
+        $response = curl_exec($ch);
+        $result = new StdClass();
+        if (curl_errno($ch)) {
+            $result->error = curl_error($ch);
+            return $result;
+        } else {
+            // Check HTTP status code (e.g., 200 OK, 401 Unauthorized)
+            $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            if ($status_code != 200) {
+                $result->error = "Response with Status Code [" . $status_code . "].";
+                return $result;
+            } else {
+                $xml = simplexml_load_string($response);
+                return json_decode(json_encode($xml));
+            }
+        }
+        curl_close($ch);
     }
 
     /**

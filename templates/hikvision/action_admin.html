@@ -51,9 +51,13 @@
     </div>
 </div>
 
-<!--# Страница со списком камер #-->
+<!--# Страница со списком вызывных панелей #-->
 [#if VIEW_MODE=""#]
     [#inc hikvision_list.html#]
+[#endif VIEW_MODE#]
+<!--# Страница редактирования вызывной панели #-->
+[#if VIEW_MODE="intercom_edit"#]
+    [#inc hikvision_edit.html#]
 [#endif VIEW_MODE#]
 
 [#inc about.html#]

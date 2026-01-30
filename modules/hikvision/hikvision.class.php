@@ -160,10 +160,22 @@ class hikvision extends module {
                     default: $r[$i]['MODEL_IMG'] = '/templates/hikvision/model_img/DEFAULT.png';
                 }
             }
-            $out['debug'] = print_r($r, true);
+            $out['intercoms'] = $r;
         }
 
-
+        if ($this->view_mode == 'intercom_edit') {
+            $r = SQLSelectOne("select * from `hikvision` where ID='".$this->id."'");
+            switch ($r['MODEL']) {
+                case 'DS-KV6103-PE1(C)': $r['MODEL_IMG'] = '/templates/hikvision/model_img/DS-KV6103-PE1C.png';
+                    break;
+                default: $r['MODEL_IMG'] = '/templates/hikvision/model_img/DEFAULT.png';
+            }
+            $out['address'] = $r['ADDRESS'];
+            $out['username'] = $r['USERNAME'];
+            $out['password'] = $r['PASSWORD'];
+            $out['model'] = $r['MODEL'];
+            $out['model_img'] = $r['MODEL_IMG'];
+        }
     }
 
 
@@ -205,6 +217,17 @@ class hikvision extends module {
             }
         }
         curl_close($ch);
+    }
+
+    /**
+     * editIntercom
+     *
+     * Edit Intercom View
+     *
+     * @access public
+     */
+    function editIntercom(&$out, $id) {
+
     }
 
     /**

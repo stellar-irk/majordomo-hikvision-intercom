@@ -117,25 +117,11 @@ class hikvision extends module {
         if ($this->ajax == 1) {
             $op = htmlspecialchars($_GET['op']);
             if ($op == 'check') {
-                $address = htmlspecialchars($_POST['address']);
-                $username = htmlspecialchars($_POST['user_name']);
-                $password = $_POST['user_pass'];
-
-                $intercom = $this->getDataFromIntercom('http://'.$address.'/ISAPI/System/deviceInfo', $username, $password);
-                if (!isset($intercom->error)) {
-                    $dbrecord = SQLSelectOne("select `ID` from `hikvision` where `ADDRESS`='".$address."'");
-                    if (isset($dbrecord['ID'])) {
-                        $intercom->error = LANG_HIKVISION_INTERCOM_EXISTS;
-                    } else {
-                        $dbrecord['MODEL'] = $intercom->model;
-                        $dbrecord['ADDRESS'] = $address;
-                        $dbrecord['USERNAME'] = $username;
-                        $dbrecord['PASSWORD'] = $password;
-
-                        SQLInsert('hikvision', $dbrecord);
-                    }
-                }
-                echo json_encode($intercom);
+                $this->ajaxCheckIntercom();
+                exit;
+            }
+            if ($op == 'edit') {
+                $this->ajaxEditIntercom();
                 exit;
             }
         }
@@ -164,17 +150,11 @@ class hikvision extends module {
         }
 
         if ($this->view_mode == 'intercom_edit') {
-            $r = SQLSelectOne("select * from `hikvision` where ID='".$this->id."'");
-            switch ($r['MODEL']) {
-                case 'DS-KV6103-PE1(C)': $r['MODEL_IMG'] = '/templates/hikvision/model_img/DS-KV6103-PE1C.png';
-                    break;
-                default: $r['MODEL_IMG'] = '/templates/hikvision/model_img/DEFAULT.png';
-            }
-            $out['address'] = $r['ADDRESS'];
-            $out['username'] = $r['USERNAME'];
-            $out['password'] = $r['PASSWORD'];
-            $out['model'] = $r['MODEL'];
-            $out['model_img'] = $r['MODEL_IMG'];
+            $this->editIntercom($out, $this->id);
+        }
+
+        if ($this->view_mode == 'intercom_delete') {
+            $this->deleteIntercom($this->id);
         }
     }
 
@@ -227,7 +207,109 @@ class hikvision extends module {
      * @access public
      */
     function editIntercom(&$out, $id) {
+        $r = SQLSelectOne("select * from `hikvision` where ID='".DBSafe1($id)."'");
+        switch ($r['MODEL']) {
+            case 'DS-KV6103-PE1(C)': $r['MODEL_IMG'] = '/templates/hikvision/model_img/DS-KV6103-PE1C.png';
+                break;
+            default: $r['MODEL_IMG'] = '/templates/hikvision/model_img/DEFAULT.png';
+        }
+        $out['id'] = $r['ID'];
+        $out['address'] = $r['ADDRESS'];
+        $out['username'] = $r['USERNAME'];
+        $out['password'] = $r['PASSWORD'];
+        $out['model'] = $r['MODEL'];
+        $out['model_img'] = $r['MODEL_IMG'];
+        $out['pollrate'] = $r['POLL_RATE'];
+        $out['LINKED_OBJECT'] = $r['LINKED_OBJECT'];
+        $out['LINKED_PROPERTY'] = $r['LINKED_PROPERTY'];
+        $out['LINKED_METHOD'] = $r['LINKED_METHOD'];
+    }
 
+    /**
+     * deleteIntercom
+     *
+     * Delete Intercom View
+     *
+     * @access public
+     */
+    function deleteIntercom($id) {
+        SQLExec("delete from `hikvision` where `ID`='".DBSafe1($id)."'");
+    }
+
+    /**
+     * ajaxCheckIntercom
+     *
+     * Check Intercom by ISAPI
+     *
+     * @access public
+     */
+    function ajaxCheckIntercom() {
+        $address = htmlspecialchars($_POST['address']);
+        $username = htmlspecialchars($_POST['user_name']);
+        $password = $_POST['user_pass'];
+        $pollrate = htmlspecialchars($_POST['poll_rate']);
+
+        $intercom = $this->getDataFromIntercom('http://'.$address.'/ISAPI/System/deviceInfo', $username, $password);
+        if (!isset($intercom->error)) {
+            $dbrecord = SQLSelectOne("select `ID` from `hikvision` where `ADDRESS`='".DBSafe1($address)."'");
+            if (isset($dbrecord['ID'])) {
+                $intercom->error = LANG_HIKVISION_INTERCOM_EXISTS;
+            } else {
+                $dbrecord['MODEL'] = $intercom->model;
+                $dbrecord['ADDRESS'] = $address;
+                $dbrecord['USERNAME'] = $username;
+                $dbrecord['PASSWORD'] = $password;
+                $dbrecord['POLL_RATE'] = $pollrate;
+
+                SQLInsert('hikvision', $dbrecord);
+            }
+        }
+        echo json_encode($intercom);
+    }
+
+    /**
+     * ajaxEditIntercom
+     *
+     * Check Intercom by ISAPI
+     *
+     * @access public
+     */
+    function ajaxEditIntercom() {
+        $id = htmlspecialchars($_POST['intercom-id']);
+        $address = htmlspecialchars($_POST['address']);
+        $username = htmlspecialchars($_POST['user_name']);
+        $password = $_POST['user_pass'];
+        $pollrate = htmlspecialchars($_POST['poll_rate']);
+        $linked_object = htmlspecialchars($_POST['linked_object']);
+        $linked_property = htmlspecialchars($_POST['linked_property']);
+        $linked_method = htmlspecialchars($_POST['linked_method']);
+
+        $intercom = $this->getDataFromIntercom('http://'.$address.'/ISAPI/System/deviceInfo', $username, $password);
+        if (!isset($intercom->error)) {
+            $dbrecord = SQLSelectOne("select * from `hikvision` where ID='".DBSafe1($id)."'");
+            $old_linked_object = $dbrecord['LINKED_OBJECT'];
+            $old_linked_property = $dbrecord['LINKED_PROPERTY'];
+            $dbrecord['ID'] = $id;
+            $dbrecord['MODEL'] = $intercom->model;
+            $dbrecord['ADDRESS'] = $address;
+            $dbrecord['USERNAME'] = $username;
+            $dbrecord['PASSWORD'] = $password;
+            $dbrecord['POLL_RATE'] = $pollrate;
+            $dbrecord['LINKED_OBJECT'] =$linked_object;
+            $dbrecord['LINKED_PROPERTY'] =$linked_property;
+            $dbrecord['LINKED_METHOD'] =$linked_method;
+
+            SQLUpdate('hikvision', $dbrecord);
+
+            if ($old_linked_object != $dbrecord['LINKED_OBJECT'] && $old_linked_property != $dbrecord['LINKED_PROPERTY']) {
+                removeLinkedProperty($old_linked_object, $old_linked_property, $this->name);
+            }
+
+            if ($dbrecord['LINKED_OBJECT'] && $dbrecord['LINKED_PROPERTY']) {
+                addLinkedProperty($dbrecord['LINKED_OBJECT'], $dbrecord['LINKED_PROPERTY'], $this->name);
+            }
+        }
+        echo json_encode($intercom);
     }
 
     /**
@@ -261,7 +343,17 @@ class hikvision extends module {
      * @access private
      */
     function dbInstall($data) {
-        $data = '';
+        $data = <<<EOD
+   hikvision: ID int NOT NULL PRIMARY KEY
+   hikvision: MODEL varchar(1000) NOT NULL
+   hikvision: ADDRESS varchar(1000) NOT NULL
+   hikvision: USERNAME varchar(1000) NOT NULL
+   hikvision: PASSWORD varchar(1000) NOT NULL
+   hikvision: POLL_RATE int NOT NULL DEFAULT '2'
+   hikvision: LINKED_OBJECT varchar(1000) NULL
+   hikvision: LINKED_PROPERTY varchar(1000) NULL
+   hikvision: LINKED_METHOD varchar(1000) NULL
+EOD;
         parent::dbInstall($data);
     }
 // --------------------------------------------------------------------

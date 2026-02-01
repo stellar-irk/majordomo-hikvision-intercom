@@ -8,6 +8,7 @@ $dictionary=array(
     'HIKVISION_ADD'=>'Add',
     'HIKVISION_CHECK'=>'Check',
     'HIKVISION_FOUND'=>'found',
+    'HIKVISION_CHANGED'=>'changed',
     'HIKVISION_ABOUT'=>'About',
     'HIKVISION_CLOSE'=>'Close',
     'HIKVISION_SAVE'=>'Save',
@@ -16,6 +17,8 @@ $dictionary=array(
     'HIKVISION_COLUMN_MODEL'=>'Model',
     'HIKVISION_COLUMN_ADDRESS'=>'Address',
     'HIKVISION_COLUMN_USER'=>'Username',
+    'HIKVISION_COLUMN_POLL_RATE'=>'Poll Rate',
+    'HIKVISION_SECOND'=>'s',
     'HIKVISION_ABOUT_TEXT'=>'Hikvision Intercom support module.<br><br>
                Project on <a href="https://github.com/layet/majordomo-hikvision-intercom" target="_blank">Github</a>.<br>
                Channel on <a href="https://t.me/mjdm_zoneminder" target="_blank">Telegram</a>.<br>',

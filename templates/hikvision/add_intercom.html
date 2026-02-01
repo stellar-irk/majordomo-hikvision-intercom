@@ -71,6 +71,10 @@
                      <label for="hik-pass" class="control-label"><#LANG_HIKVISION_PASSWORD#></label>
                      <input id="hik-pass" class="form-control" type="password" autocomplete="current-password" name="user_pass" class="input">
                   </div>
+                  <div class="form-group">
+                     <label for="hik-pollrate" class="control-label"><#LANG_HIKVISION_COLUMN_POLL_RATE#>, <#LANG_HIKVISION_SECOND#></label>
+                     <input id="hik-pollrate" class="form-control" type="number" name="poll_rate" value="[#pollrate#]">
+                  </div>
                   <div class="alert alert-danger" role="alert" id="hik-alert" style="display: none"></div>
                   <div class="alert alert-success" role="alert" id="hik-info" style="display: none"></div>
                </fieldset>

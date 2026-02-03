@@ -184,19 +184,22 @@ class hikvision extends module {
         $result = new StdClass();
         if (curl_errno($ch)) {
             $result->error = curl_error($ch);
+            curl_close($ch);
             return $result;
         } else {
             // Check HTTP status code (e.g., 200 OK, 401 Unauthorized)
             $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             if ($status_code != 200) {
                 $result->error = "Response with Status Code [" . $status_code . "].";
+                curl_close($ch);
                 return $result;
             } else {
                 $xml = simplexml_load_string($response);
-                return json_decode(json_encode($xml));
+                curl_close($ch);
+                if ($xml === false) return json_decode($response);
+                    else return json_decode(json_encode($xml));
             }
         }
-        curl_close($ch);
     }
 
     /**

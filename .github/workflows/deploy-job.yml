@@ -14,13 +14,13 @@ jobs:
         run: tar -xzvf /home/stellar/github/hikvision-develop.tar.gz -C /home/stellar/github
       - name: Copy artifact files
         run: |
-          cp -r /home/stellar/github/hikvision-intercom-develop/. /var/www/html/
+          cp -r /home/stellar/github/majordomo-hikvision-intercom-develop/. /var/www/html/
           date "+%H:%M %d.%m.%Y" > /var/www/html/cms/modules_installed/hikvision.installed
-          find /home/stellar/github/hikvision-intercom-develop > /var/www/html/cms/modules_installed/hikvision.files
+          find /home/stellar/github/majordomo-hikvision-intercom-develop > /var/www/html/cms/modules_installed/hikvision.files
       - name: Run DB Install
-        run: php -f "/home/stellar/github/hikvision-intercom-develop/deploy/dbInstall.php"
+        run: php -f "/home/stellar/github/majordomo-hikvision-intercom-develop/deploy/dbInstall.php"
       - name: Remove temp files
         run: |
-          rm -rf /home/stellar/github/hikvision-intercom-develop
+          rm -rf /home/stellar/github/majordomo-hikvision-intercom-develop
           rm /home/stellar/github/hikvision-develop.tar.gz
           rm -rf /var/www/html/deploy

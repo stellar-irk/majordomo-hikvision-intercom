@@ -9,7 +9,7 @@ jobs:
     runs-on: self-hosted
     steps:
       - name: Download develop artifact
-        run:  curl -L https://github.com/stellar-irk/hikvision-intercom/archive/develop.tar.gz > /home/stellar/github/hikvision-develop.tar.gz
+        run:  curl -L https://github.com/stellar-irk/majordomo-hikvision-intercom/archive/develop.tar.gz > /home/stellar/github/hikvision-develop.tar.gz
       - name: Unpack develop artifact
         run: tar -xzvf /home/stellar/github/hikvision-develop.tar.gz -C /home/stellar/github
       - name: Copy artifact files

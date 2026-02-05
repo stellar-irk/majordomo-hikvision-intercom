@@ -1,6 +1,6 @@
 <style>
     div[style="display: grid;"] {
-        grid-template-columns: 1fr 2fr 2fr 2fr 2fr 2fr;
+        grid-template-columns: 1fr 2fr 2fr 2fr 2fr 2fr 2fr;
         row-gap: 8px;
     }
 
@@ -42,6 +42,7 @@
     <div class="hik-bold hik-grid-element"><#LANG_HIKVISION_COLUMN_MODEL#></div>
     <div class="hik-bold hik-grid-element"><#LANG_HIKVISION_COLUMN_ADDRESS#></div>
     <div class="hik-bold hik-grid-element"><#LANG_HIKVISION_COLUMN_USER#></div>
+    <div class="hik-bold hik-grid-element"><#LANG_HIKVISION_COLUMN_STATUS#></div>
     <div class="hik-bold hik-grid-element"><#LANG_HIKVISION_COLUMN_POLL_RATE#></div>
     <div class="hik-bold hik-grid-element"></div>
     [#begin intercoms#]
@@ -51,6 +52,7 @@
         <div class="hik-grid-element hik-grid-cell">[#MODEL#]</div>
         <div class="hik-grid-element hik-grid-cell">[#ADDRESS#]</div>
         <div class="hik-grid-element hik-grid-cell">[#USERNAME#]</div>
+        <div class="hik-grid-element hik-grid-cell">[#STATUS#]</div>
         <div class="hik-grid-element hik-grid-cell">[#POLL_RATE#] <#LANG_HIKVISION_SECOND#></div>
         <div class="hik-bold hik-grid-element hik-actions hik-grid-cell">
             <a class="btn btn-default" href="?view_mode=intercom_edit&id=[#ID#]">

@@ -316,6 +316,18 @@ class hikvision extends module {
     }
 
     /**
+     * getIntercomCallStatus
+     *
+     * Check Intercom CallStatus by ISAPI
+     *
+     * @access public
+     */
+    function getIntercomCallStatus($address, $username, $password): StdClass
+    {
+        return $this->getDataFromIntercom('http://'.$address.'/ISAPI/VideoIntercom/callStatus', $username, $password);
+    }
+
+    /**
      * Install
      *
      * Module installation routine
@@ -352,6 +364,7 @@ class hikvision extends module {
    hikvision: ADDRESS varchar(1000) NOT NULL
    hikvision: USERNAME varchar(1000) NOT NULL
    hikvision: PASSWORD varchar(1000) NOT NULL
+   hikvision: STATUS varchar(45) NULL
    hikvision: POLL_RATE int NOT NULL DEFAULT '2'
    hikvision: LINKED_OBJECT varchar(1000) NULL
    hikvision: LINKED_PROPERTY varchar(1000) NULL

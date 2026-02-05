@@ -359,7 +359,7 @@ class hikvision extends module {
      */
     function dbInstall($data) {
         $data = <<<EOD
-   hikvision: ID int NOT NULL PRIMARY KEY
+   hikvision: ID int NOT NULL PRIMARY KEY AUTO_INCREMENT
    hikvision: MODEL varchar(1000) NOT NULL
    hikvision: ADDRESS varchar(1000) NOT NULL
    hikvision: USERNAME varchar(1000) NOT NULL

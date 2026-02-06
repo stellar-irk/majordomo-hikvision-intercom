@@ -34,6 +34,18 @@
         flex-direction: row;
     }
 </style>
+<script type="text/javascript">
+    setInterval(function () {
+        $.get("/ajax/hikvision.html?op=status", function (data) {
+            st = JSON.parse(data);
+            if (!st.error) {
+                st.forEach(function (st_item) {
+                    $("div[data-status-id='"+st_item.ID+"']").html(st_item.STATUS);
+                });
+            }
+        });
+    }, 5000);
+</script>
 <ol class="breadcrumb">
     <li class="active"><#LANG_HIKVISION_HOME#></li>
 </ol>
@@ -52,7 +64,7 @@
         <div class="hik-grid-element hik-grid-cell">[#MODEL#]</div>
         <div class="hik-grid-element hik-grid-cell">[#ADDRESS#]</div>
         <div class="hik-grid-element hik-grid-cell">[#USERNAME#]</div>
-        <div class="hik-grid-element hik-grid-cell">[#STATUS#]</div>
+        <div class="hik-grid-element hik-grid-cell" data-status-id="[#ID#]">[#STATUS#]</div>
         <div class="hik-grid-element hik-grid-cell">[#POLL_RATE#] <#LANG_HIKVISION_SECOND#></div>
         <div class="hik-bold hik-grid-element hik-actions hik-grid-cell">
             <a class="btn btn-default" href="?view_mode=intercom_edit&id=[#ID#]">

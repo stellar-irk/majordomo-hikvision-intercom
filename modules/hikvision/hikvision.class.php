@@ -124,6 +124,10 @@ class hikvision extends module {
                 $this->ajaxEditIntercom();
                 exit;
             }
+            if ($op == 'status') {
+                $this->ajaxGetIntercomStatus();
+                exit;
+            }
         }
     }
 
@@ -155,6 +159,7 @@ class hikvision extends module {
 
         if ($this->view_mode == 'intercom_delete') {
             $this->deleteIntercom($this->id);
+            $this->redirect('?');
         }
     }
 
@@ -313,6 +318,23 @@ class hikvision extends module {
             }
         }
         echo json_encode($intercom);
+    }
+
+    /**
+     * ajaxGetIntercomStatus
+     *
+     * Get Intercom Status from DB
+     *
+     * @access public
+     */
+    function ajaxGetIntercomStatus() {
+        $res  = SQLSelect('select `ID`, `STATUS` from `hikvision`');
+        if ($res === 0) {
+            $res = new StdClass;
+            $res->error = 'DB Error';
+        }
+
+        echo json_encode($res);
     }
 
     /**

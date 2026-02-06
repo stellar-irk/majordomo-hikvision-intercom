@@ -25,21 +25,19 @@ while (1)
         if ($ts - $item['LATEST_POLL'] >= $item['POLL_RATE']) {
             $res = $hikvision->getIntercomCallStatus($item['ADDRESS'], $item['USERNAME'], $item['PASSWORD']);
             if (!isset($res->error)) {
+                $oldvalue = $item['STATUS'];
+                $newvalue = $res->CallStatus->status;
+
+                if ($oldvalue <> $newvalue) SQLExec("update `hikvision` set `STATUS`='".$newvalue."' where `ID`=".$item['ID']);
+
                 if ($item['LINKED_METHOD'])  {
                     $params = array();
-                    $params['OLD_VALUE'] = GetGlobal($item['LINKED_OBJECT'].'.'.$item['LINKED_PROPERTY']);
-                    $params['NEW_VALUE'] = $res->CallStatus->status;
+                    $params['OLD_VALUE'] = $oldvalue;
+                    $params['NEW_VALUE'] = $newvalue;
                     callMethodSafe($item['LINKED_OBJECT'] . '.' . $item['LINKED_METHOD'], $params);
                 }
-                if ($item['LINKED_PROPERTY']) {
-                    $oldvalue = GetGlobal($item['LINKED_OBJECT'].'.'.$item['LINKED_PROPERTY']);
-                    $newvalue = $res->CallStatus->status;
-
-                    if ($oldvalue <> $newvalue) {
-                        SQLExec("update `hikvision` set `STATUS`='".$newvalue."' where `ID`=".$item['ID']);
-                        SetGlobal($item['LINKED_OBJECT'].'.'.$item['LINKED_PROPERTY'], $newvalue, 0);
-                    }
-                }
+                if ($item['LINKED_PROPERTY'] && oldvalue <> $newvalue)
+                    SetGlobal($item['LINKED_OBJECT'].'.'.$item['LINKED_PROPERTY'], $newvalue, 0);
 
                /* echo "<tr><td>".$item['ID']."</td>".
                     "<td>".$ts."</td>".

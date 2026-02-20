@@ -45,8 +45,6 @@ while (1)
                     "<td>".date("H:i:s")."</td>".
                     "<td><pre>".print_r($res, true)."</pre></td></tr>";*/
                 $item['LATEST_POLL'] = time();
-            } else {
-                DebMes("Error getting status of intercom ".$item['ADDRESS'].': '.$res->error , basename(__FILE__, '.php'));
             }
         }
     }

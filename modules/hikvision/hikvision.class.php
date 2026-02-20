@@ -128,6 +128,14 @@ class hikvision extends module {
                 $this->ajaxGetIntercomStatus();
                 exit;
             }
+            if ($op == 'open') {
+                $this->ajaxOpenIntercomDoor();
+                exit;
+            }
+            if ($op == 'reject') {
+                $this->ajaxRejectIntercomCall();
+                exit;
+            }
         }
     }
 
@@ -172,19 +180,13 @@ class hikvision extends module {
      *
      * @access public
      */
-    function getDataFromIntercom($url, $username, $password, $method = 'GET'): StdClass {
+    function getDataFromIntercom($url, $username, $password): StdClass {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Return the response as a string
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); // Follow redirects if any
         curl_setopt($ch, CURLOPT_USERPWD, $username . ":" . $password); // Set username and password
         curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST); // Specify Digest authentication
-        switch ($method) {
-            case 'POST': curl_setopt($ch, CURLOPT_POST, true);
-                        break;
-            case 'PUT': curl_setopt($ch, CURLOPT_PUT, true);
-                break;
-        }
         $response = curl_exec($ch);
         $result = new StdClass();
         if (curl_errno($ch)) {
@@ -203,6 +205,46 @@ class hikvision extends module {
                 curl_close($ch);
                 if ($xml === false) return json_decode($response);
                     else return json_decode(json_encode($xml));
+            }
+        }
+    }
+
+    /**
+     * putDataToIntercom
+     *
+     * Get Data from url with Digest Auth
+     *
+     * @access public
+     */
+    function putDataToIntercom($url, $username, $password, $data): StdClass {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Return the response as a string
+        //curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); // Follow redirects if any
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json','Content-Length: ' . strlen($data)));
+        curl_setopt($ch, CURLOPT_USERPWD, $username . ":" . $password); // Set username and password
+        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST); // Specify Digest authentication
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+
+        $response = curl_exec($ch);
+        $result = new StdClass();
+        if (curl_errno($ch)) {
+            $result->error = curl_error($ch);
+            curl_close($ch);
+            return $result;
+        } else {
+            // Check HTTP status code (e.g., 200 OK, 401 Unauthorized)
+            $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            if ($status_code != 200) {
+                $result->error = "Response with Status Code [" . $status_code . "].";
+                curl_close($ch);
+                return $result;
+            } else {
+                $xml = simplexml_load_string($response);
+                curl_close($ch);
+                if ($xml === false) return json_decode($response);
+                else return json_decode(json_encode($xml));
             }
         }
     }
@@ -335,6 +377,40 @@ class hikvision extends module {
         }
 
         echo json_encode($res);
+    }
+
+    /**
+     * ajaxOpenIntercomDoor
+     *
+     * Open Door Intercom Command
+     *
+     * @access public
+     */
+    function ajaxOpenIntercomDoor() {
+        $id = htmlspecialchars($_GET['id']);
+        $db = SQLSelectOne("select * from `hikvision` where `ID`='".$id."'");
+
+        $res = $this->putDataToIntercom('http://'.$db['ADDRESS'].'/ISAPI/AccessControl/RemoteControl/door/1', $db['USERNAME'], $db['PASSWORD'],
+        "<?xml version='1.0' encoding='utf-8'?><RemoteControlDoor xmlns=\"http://www.isapi.org/ver20/XMLSchema\" version=\"2.0\"><cmd>open</cmd></RemoteControlDoor>");
+
+        echo "<pre>".print_r($res, true)."</pre>";
+    }
+
+    /**
+     * ajaxRejectIntercomCall
+     *
+     * Reject Intercom Call
+     *
+     * @access public
+     */
+    function ajaxRejectIntercomCall() {
+        $id = htmlspecialchars($_GET['id']);
+        $db = SQLSelectOne("select * from `hikvision` where `ID`='".$id."'");
+
+        $res = $this->putDataToIntercom('http://'.$db['ADDRESS'].'/ISAPI/VideoIntercom/callSignal?format=json', $db['USERNAME'], $db['PASSWORD'],
+            '{"CallSignal":{"cmdType": "reject"}}');
+
+        echo "<pre>".print_r($res, true)."</pre>";
     }
 
     /**

@@ -4,6 +4,13 @@
         flex-direction: row;
         flex-wrap: wrap;
         align-items: center;
+        justify-content: space-around;
+    }
+
+    .hik-intercom-tile {
+        border: 1px solid #CDD1DC;
+        border-radius: 10px;
+        overflow: hidden;
     }
 </style>
 <script type="text/javascript">
@@ -30,8 +37,13 @@
         <li class="active">[#model#]</li>
     </ol>
 <div class="hik-edit-header">
-    <img src="[#model_img#]" />
-    <h2>[#model#]</h2>
+    <div>
+        <img src="[#model_img#]" />
+        <h2>[#model#]</h2>
+    </div>
+    <div class="hik-intercom-tile">
+        <img src="/ajax/hikvision.html?op=image&id=[#id#]" style="height: 320px;" />
+    </div>
 </div>
 <form id="hik-edit-form">
     <fieldset>

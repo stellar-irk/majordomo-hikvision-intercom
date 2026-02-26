@@ -14,11 +14,13 @@ $dictionary=array(
     'HIKVISION_SAVE'=>'Save',
     'HIKVISION_HOME'=>'Home',
     'HIKVISION_INTERCOM_EXISTS'=>'The Intercom with this address already added.',
+    'HIKVISION_COLUMN_ID'=>'ID',
     'HIKVISION_COLUMN_MODEL'=>'Model',
     'HIKVISION_COLUMN_ADDRESS'=>'Address',
     'HIKVISION_COLUMN_USER'=>'Username',
     'HIKVISION_COLUMN_POLL_RATE'=>'Poll Rate',
     'HIKVISION_COLUMN_STATUS'=>'Status',
+    'HIKVISION_COLUMN_UPDATED_ON'=>'Updated',
     'HIKVISION_SECOND'=>'s',
     'HIKVISION_ABOUT_TEXT'=>'Hikvision Intercom support module.<br><br>
                Project on <a href="https://github.com/layet/majordomo-hikvision-intercom" target="_blank">Github</a>.<br>

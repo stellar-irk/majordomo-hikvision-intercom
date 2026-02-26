@@ -83,10 +83,6 @@ class hikvision extends module {
         global $session;
         $out=array();
 
-        if ($this->ajax == 1) {
-
-        }
-
         if ($this->action=='admin') {
             $this->admin($out);
         } else {
@@ -136,6 +132,15 @@ class hikvision extends module {
                 $this->ajaxRejectIntercomCall();
                 exit;
             }
+            if ($op == 'image') {
+                $this->ajaxGetImageFromIntercom();
+                exit;
+            }
+        }
+
+        if ($this->view_mode == '') {
+            $out['ID'] = $this->id;
+
         }
     }
 
@@ -172,6 +177,40 @@ class hikvision extends module {
     }
 
 
+    /**
+     * getImageFromIntercom
+     *
+     * Get Image from url with Digest Auth
+     *
+     * @access public
+     */
+    function getImageFromIntercom($url, $username, $password) {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); // Follow redirects if any
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_USERPWD, $username . ":" . $password); // Set username and password
+        curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST); // Specify Digest authentication
+        $response = curl_exec($ch);
+        $result = new StdClass();
+        if (curl_errno($ch)) {
+            $result->error = curl_error($ch);
+            curl_close($ch);
+            return $result;
+        } else {
+            // Check HTTP status code (e.g., 200 OK, 401 Unauthorized)
+            $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            if ($status_code != 200) {
+                $result->error = "Response with Status Code [" . $status_code . "].";
+                curl_close($ch);
+                return $result;
+            } else {
+                header("Content-Type: image/jpeg");
+                curl_close($ch) ;
+                echo $response;
+            }
+        }
+    }
 
     /**
      * getDataFromIntercom
@@ -286,6 +325,14 @@ class hikvision extends module {
         SQLExec("delete from `hikvision` where `ID`='".DBSafe1($id)."'");
     }
 
+    function ajaxGetImageFromIntercom()
+    {
+        $id = htmlspecialchars($_GET['id']);
+        $db = SQLSelectOne("select * from `hikvision` where `ID`='".$id."'");
+
+        $this->getImageFromIntercom("http://".$db['ADDRESS']."/ISAPI/Streaming/channels/101/picture", $db['USERNAME'], $db['PASSWORD']);
+    }
+
     /**
      * ajaxCheckIntercom
      *
@@ -370,7 +417,7 @@ class hikvision extends module {
      * @access public
      */
     function ajaxGetIntercomStatus() {
-        $res  = SQLSelect('select `ID`, `STATUS` from `hikvision`');
+        $res  = SQLSelect('select `ID`, `STATUS`, `UPDATED_ON` from `hikvision`');
         if ($res === 0) {
             $res = new StdClass;
             $res->error = 'DB Error';
@@ -467,6 +514,7 @@ class hikvision extends module {
    hikvision: LINKED_OBJECT varchar(1000) NULL
    hikvision: LINKED_PROPERTY varchar(1000) NULL
    hikvision: LINKED_METHOD varchar(1000) NULL
+   hikvision: UPDATED_ON datetime NULL
 EOD;
         parent::dbInstall($data);
     }

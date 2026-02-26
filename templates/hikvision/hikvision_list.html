@@ -1,7 +1,13 @@
 <style>
     div[style="display: grid;"] {
-        grid-template-columns: 1fr 2fr 2fr 2fr 2fr 2fr 2fr;
+        grid-template-columns: 1fr 2fr 2fr 2fr 2fr 2fr 2fr 2fr;
         row-gap: 8px;
+    }
+
+    @media (max-width: 1000px) {
+        div[style="display: grid;"] {
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+        }
     }
 
     .hik-grid-element {
@@ -41,6 +47,7 @@
             if (!st.error) {
                 st.forEach(function (st_item) {
                     $("div[data-status-id='"+st_item.ID+"']").html(st_item.STATUS);
+                    $("div[data-updated-id='"+st_item.ID+"']").html(st_item.UPDATED_ON);
                 });
             }
         });
@@ -50,22 +57,27 @@
     <li class="active"><#LANG_HIKVISION_HOME#></li>
 </ol>
 <div style="display: grid;">
-    <div class="hik-bold hik-grid-element"></div>
+    <div class="hik-bold hik-grid-element"><#LANG_HIKVISION_COLUMN_ID#></div>
     <div class="hik-bold hik-grid-element"><#LANG_HIKVISION_COLUMN_MODEL#></div>
     <div class="hik-bold hik-grid-element"><#LANG_HIKVISION_COLUMN_ADDRESS#></div>
     <div class="hik-bold hik-grid-element"><#LANG_HIKVISION_COLUMN_USER#></div>
     <div class="hik-bold hik-grid-element"><#LANG_HIKVISION_COLUMN_STATUS#></div>
     <div class="hik-bold hik-grid-element"><#LANG_HIKVISION_COLUMN_POLL_RATE#></div>
+    <div class="hik-bold hik-grid-element"><#LANG_HIKVISION_COLUMN_UPDATED_ON#></div>
     <div class="hik-bold hik-grid-element"></div>
     [#begin intercoms#]
         <div class="hik-bold hik-grid-element hik-grid-cell">
-            <img src="[#MODEL_IMG#]" style="width: 64px;" />
+            <div>
+                <img src="[#MODEL_IMG#]" style="width: 64px;" />
+                <span>[#ID#]</span>
+            </div>
         </div>
         <div class="hik-grid-element hik-grid-cell">[#MODEL#]</div>
         <div class="hik-grid-element hik-grid-cell">[#ADDRESS#]</div>
         <div class="hik-grid-element hik-grid-cell">[#USERNAME#]</div>
         <div class="hik-grid-element hik-grid-cell" data-status-id="[#ID#]">[#STATUS#]</div>
         <div class="hik-grid-element hik-grid-cell">[#POLL_RATE#] <#LANG_HIKVISION_SECOND#></div>
+        <div class="hik-grid-element hik-grid-cell" data-updated-id="[#ID#]">[#UPDATED_ON#]</div>
         <div class="hik-bold hik-grid-element hik-actions hik-grid-cell">
             <a class="btn btn-default" href="?view_mode=intercom_edit&id=[#ID#]">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

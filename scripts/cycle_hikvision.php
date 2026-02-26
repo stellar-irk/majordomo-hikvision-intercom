@@ -29,6 +29,7 @@ while (1)
                 $newvalue = $res->CallStatus->status;
 
                 if ($oldvalue <> $newvalue) SQLExec("update `hikvision` set `STATUS`='".$newvalue."' where `ID`=".$item['ID']);
+                SQLExec("update `hikvision` set `UPDATED_ON`='".date('Y-m-d H:i:s')."' where `ID`=".$item['ID']);
 
                 if ($item['LINKED_METHOD'])  {
                     $params = array();

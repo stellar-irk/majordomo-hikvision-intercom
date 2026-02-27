@@ -23,7 +23,7 @@ $dictionary=array(
     'HIKVISION_COLUMN_UPDATED_ON'=>'Оновлено',
     'HIKVISION_SECOND'=>'с',
     'HIKVISION_ABOUT_TEXT'=>'Модуль підтримки викликних панелей Hikvision.<br><br>
-               Проект у <a href="https://github.com/layet/majordomo-hikvision-intercom" target="_blank">Github</a>.<br>
+               Проект у <a href="https://github.com/stellar-irk/majordomo-hikvision-intercom" target="_blank">Github</a>.<br>
                Канал у <a href="https://t.me/mjdm_zoneminder" target="_blank">Telegram</a>.<br>',
 );
 

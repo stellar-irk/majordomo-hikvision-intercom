@@ -23,7 +23,7 @@ $dictionary=array(
     'HIKVISION_COLUMN_UPDATED_ON'=>'Updated',
     'HIKVISION_SECOND'=>'s',
     'HIKVISION_ABOUT_TEXT'=>'Hikvision Intercom support module.<br><br>
-               Project on <a href="https://github.com/layet/majordomo-hikvision-intercom" target="_blank">Github</a>.<br>
+               Project on <a href="https://github.com/stellar-irk/majordomo-hikvision-intercom" target="_blank">Github</a>.<br>
                Channel on <a href="https://t.me/mjdm_zoneminder" target="_blank">Telegram</a>.<br>',
 );
 

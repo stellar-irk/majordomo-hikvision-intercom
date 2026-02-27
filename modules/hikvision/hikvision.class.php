@@ -160,6 +160,26 @@ class hikvision extends module {
                 switch ($r[$i]['MODEL']) {
                     case 'DS-KV6103-PE1(C)': $r[$i]['MODEL_IMG'] = '/templates/hikvision/model_img/DS-KV6103-PE1C.png';
                         break;
+                    case 'DS-KV6113-PE1(C)': $r[$i]['MODEL_IMG'] = '/templates/hikvision/model_img/DS-KV6103-PE1C.png';
+                        break;
+                    case 'DS-KV6113-WPE1(C)': $r[$i]['MODEL_IMG'] = '/templates/hikvision/model_img/DS-KV6103-PE1C.png';
+                        break;
+                    case 'DS-KV6114-E1': $r[$i]['MODEL_IMG'] = '/templates/hikvision/model_img/DS-KV6114-E1.png';
+                        break;
+                    case 'DS-KV6114-WBE1': $r[$i]['MODEL_IMG'] = '/templates/hikvision/model_img/DS-KV6114-E1.png';
+                        break;
+                    case 'DS-KV6114-ME1': $r[$i]['MODEL_IMG'] = '/templates/hikvision/model_img/DS-KV6114-ME1.png';
+                        break;
+                    case 'DS-KV6114-MWBE1': $r[$i]['MODEL_IMG'] = '/templates/hikvision/model_img/DS-KV6114-ME1.png';
+                        break;
+                    case 'DS-KV6124-E1': $r[$i]['MODEL_IMG'] = '/templates/hikvision/model_img/DS-KV6124-E1.png';
+                        break;
+                    case 'DS-KV6124-WBE1': $r[$i]['MODEL_IMG'] = '/templates/hikvision/model_img/DS-KV6124-E1.png';
+                        break;
+                    case 'DS-KV6133-ME1': $r[$i]['MODEL_IMG'] = '/templates/hikvision/model_img/DS-KV6133-ME1.png';
+                        break;
+                    case 'DS-KV6133-WME1': $r[$i]['MODEL_IMG'] = '/templates/hikvision/model_img/DS-KV6133-ME1.png';
+                        break;
                     default: $r[$i]['MODEL_IMG'] = '/templates/hikvision/model_img/DEFAULT.png';
                 }
             }
@@ -299,6 +319,26 @@ class hikvision extends module {
         $r = SQLSelectOne("select * from `hikvision` where ID='".DBSafe1($id)."'");
         switch ($r['MODEL']) {
             case 'DS-KV6103-PE1(C)': $r['MODEL_IMG'] = '/templates/hikvision/model_img/DS-KV6103-PE1C.png';
+                break;
+            case 'DS-KV6113-PE1(C)': $r['MODEL_IMG'] = '/templates/hikvision/model_img/DS-KV6103-PE1C.png';
+                break;
+            case 'DS-KV6113-WPE1(C)': $r['MODEL_IMG'] = '/templates/hikvision/model_img/DS-KV6103-PE1C.png';
+                break;
+            case 'DS-KV6114-E1': $r['MODEL_IMG'] = '/templates/hikvision/model_img/DS-KV6114-E1.png';
+                break;
+            case 'DS-KV6114-WBE1': $r['MODEL_IMG'] = '/templates/hikvision/model_img/DS-KV6114-E1.png';
+                break;
+            case 'DS-KV6114-ME1': $r['MODEL_IMG'] = '/templates/hikvision/model_img/DS-KV6114-ME1.png';
+                break;
+            case 'DS-KV6114-MWBE1': $r['MODEL_IMG'] = '/templates/hikvision/model_img/DS-KV6114-ME1.png';
+                break;
+            case 'DS-KV6124-E1': $r['MODEL_IMG'] = '/templates/hikvision/model_img/DS-KV6124-E1.png';
+                break;
+            case 'DS-KV6124-WBE1': $r['MODEL_IMG'] = '/templates/hikvision/model_img/DS-KV6124-E1.png';
+                break;
+            case 'DS-KV6133-ME1': $r['MODEL_IMG'] = '/templates/hikvision/model_img/DS-KV6133-ME1.png';
+                break;
+            case 'DS-KV6133-WME1': $r['MODEL_IMG'] = '/templates/hikvision/model_img/DS-KV6133-ME1.png';
                 break;
             default: $r['MODEL_IMG'] = '/templates/hikvision/model_img/DEFAULT.png';
         }

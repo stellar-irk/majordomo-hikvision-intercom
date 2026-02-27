@@ -1,0 +1,93 @@
+<style>
+    .hik-edit-header {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-around;
+    }
+
+    .hik-intercom-tile {
+        border: 1px solid #CDD1DC;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+</style>
+<script type="text/javascript">
+    function editIntercom() {
+        $("#edit-intercom").attr("disabled", "disabled");
+        $.post("/ajax/hikvision.html?op=edit", $("#hik-edit-form").serialize())
+            .done(function (data, textStatus, jqXHR) {
+                data = JSON.parse(data);
+                if (data.error) {
+                    $("#hik-edit-alert").html(data.error);
+                    $("#hik-edit-alert").show();
+                    $("#edit-intercom").removeAttr("disabled");
+                } else {
+                    $("#hik-edit-info").html(data.model + ' <#LANG_HIKVISION_CHANGED#>');
+                    $("#hik-edit-alert").hide();
+                    $("#hik-edit-info").show();
+                    location.href="?pd=pz_&md=panel&inst=&action=hikvision";
+                }
+            });
+    }
+</script>
+    <ol class="breadcrumb">
+        <li><a href="?"><#LANG_HIKVISION_HOME#></a></li>
+        <li class="active">[#model#]</li>
+    </ol>
+<div class="hik-edit-header">
+    <div>
+        <img src="[#model_img#]" />
+        <h2>[#model#]</h2>
+    </div>
+    <div class="hik-intercom-tile">
+        <img src="/ajax/hikvision.html?op=image&id=[#id#]" style="height: 320px;" />
+    </div>
+</div>
+<form id="hik-edit-form">
+    <fieldset>
+        <input id="hik-edit-id" type="hidden" name="intercom-id" value="[#id#]">
+        <div class="form-group">
+            <label for="hik-edit-address" class="control-label"><#LANG_HIKVISION_ADDRESS#></label>
+            <input id="hik-edit-address" class="form-control" type="text" name="address" value="[#address#]">
+        </div>
+        <div class="form-group">
+            <label for="hik-edit-username" class="control-label"><#LANG_HIKVISION_USERNAME#></label>
+            <input id="hik-edit-username" class="form-control" type="text" autocomplete="username" name="user_name" value="[#username#]">
+        </div>
+        <div class="form-group">
+            <label for="hik-edit-pass" class="control-label"><#LANG_HIKVISION_PASSWORD#></label>
+            <input id="hik-edit-pass" class="form-control" type="password" autocomplete="current-password" name="user_pass" value="[#password#]">
+        </div>
+        <div class="form-group">
+            <label for="hik-edit-pollrate" class="control-label"><#LANG_HIKVISION_COLUMN_POLL_RATE#>, <#LANG_HIKVISION_SECOND#></label>
+            <input id="hik-edit-pollrate" class="form-control" type="number" name="poll_rate" value="[#pollrate#]">
+        </div>
+        <!-- LINKED_OBJECT (varchar) -->
+        <div class="form-group">
+            <label for="linked_object" class="control-label">
+                <#LANG_LINKED_OBJECT#>:
+            </label>
+            <input id="linked_object" name="linked_object" value="[#LINKED_OBJECT#]" type="text" class="form-control">
+        </div>
+        <!-- LINKED_PROPERTY (varchar) -->
+        <div class="form-group">
+            <label for="linked_property" class="control-label">
+                <#LANG_LINKED_PROPERTY#>:
+            </label>
+            <input id="linked_property" name="linked_property" value="[#LINKED_PROPERTY#]" type="text" class="form-control">
+        </div>
+        <!-- LINKED_METHOD (varchar) -->
+        <div class="form-group">
+            <label for="linked_method" class="control-label">
+                <#LANG_METHOD#>:
+            </label>
+            <input id="linked_method" name="linked_method" value="[#LINKED_METHOD#]" type="text" class="form-control">
+        </div>
+        [#module name="linkedobject" object_field="linked_object" property_field="linked_property" method_field="linked_method"#]
+        <div class="alert alert-danger" role="alert" id="hik-edit-alert" style="display: none"></div>
+        <div class="alert alert-success" role="alert" id="hik-edit-info" style="display: none"></div>
+    </fieldset>
+    <button id="edit-intercom" class="btn btn-primary" onclick="editIntercom();"><#LANG_HIKVISION_SAVE#></button>
+</form>

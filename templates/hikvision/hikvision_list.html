@@ -1,0 +1,94 @@
+<style>
+    div[style="display: grid;"] {
+        grid-template-columns: 1fr 2fr 2fr 2fr 2fr 2fr 2fr 2fr;
+        row-gap: 8px;
+    }
+
+    @media (max-width: 1000px) {
+        div[style="display: grid;"] {
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+        }
+    }
+
+    .hik-grid-element {
+        border-bottom: 1px solid #CCCCCC;
+    }
+
+    .hik-grid-cell {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+    }
+
+    .hik-bold {
+        font-weight: bold;
+    }
+
+    .hik-actions {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        flex-direction: row;
+        gap: 8px;
+    }
+
+    .hik-actions > a {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        flex-direction: row;
+    }
+</style>
+<script type="text/javascript">
+    setInterval(function () {
+        $.get("/ajax/hikvision.html?op=status", function (data) {
+            st = JSON.parse(data);
+            if (!st.error) {
+                st.forEach(function (st_item) {
+                    $("div[data-status-id='"+st_item.ID+"']").html(st_item.STATUS);
+                    $("div[data-updated-id='"+st_item.ID+"']").html(st_item.UPDATED_ON);
+                });
+            }
+        });
+    }, 5000);
+</script>
+<ol class="breadcrumb">
+    <li class="active"><#LANG_HIKVISION_HOME#></li>
+</ol>
+<div style="display: grid;">
+    <div class="hik-bold hik-grid-element"><#LANG_HIKVISION_COLUMN_ID#></div>
+    <div class="hik-bold hik-grid-element"><#LANG_HIKVISION_COLUMN_MODEL#></div>
+    <div class="hik-bold hik-grid-element"><#LANG_HIKVISION_COLUMN_ADDRESS#></div>
+    <div class="hik-bold hik-grid-element"><#LANG_HIKVISION_COLUMN_USER#></div>
+    <div class="hik-bold hik-grid-element"><#LANG_HIKVISION_COLUMN_STATUS#></div>
+    <div class="hik-bold hik-grid-element"><#LANG_HIKVISION_COLUMN_POLL_RATE#></div>
+    <div class="hik-bold hik-grid-element"><#LANG_HIKVISION_COLUMN_UPDATED_ON#></div>
+    <div class="hik-bold hik-grid-element"></div>
+    [#begin intercoms#]
+        <div class="hik-bold hik-grid-element hik-grid-cell">
+            <div>
+                <img src="[#MODEL_IMG#]" style="width: 64px;" />
+                <span>[#ID#]</span>
+            </div>
+        </div>
+        <div class="hik-grid-element hik-grid-cell">[#MODEL#]</div>
+        <div class="hik-grid-element hik-grid-cell">[#ADDRESS#]</div>
+        <div class="hik-grid-element hik-grid-cell">[#USERNAME#]</div>
+        <div class="hik-grid-element hik-grid-cell" data-status-id="[#ID#]">[#STATUS#]</div>
+        <div class="hik-grid-element hik-grid-cell">[#POLL_RATE#] <#LANG_HIKVISION_SECOND#></div>
+        <div class="hik-grid-element hik-grid-cell" data-updated-id="[#ID#]">[#UPDATED_ON#]</div>
+        <div class="hik-bold hik-grid-element hik-actions hik-grid-cell">
+            <a class="btn btn-default" href="?view_mode=intercom_edit&id=[#ID#]">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5.01198 16.9642L5.96066 17.2804H5.96066L5.01198 16.9642ZM5.76117 14.7166L4.81248 14.4004H4.81248L5.76117 14.7166ZM6.53421 13.4658L7.24132 14.1729L7.24132 14.1729L6.53421 13.4658ZM14.0001 5.99994L13.2929 5.29283V5.29283L14.0001 5.99994ZM18 9.99994L18.7072 10.707H18.7072L18 9.99994ZM10.5342 17.4658L9.8271 16.7587L9.8271 16.7587L10.5342 17.4658ZM9.2834 18.2388L9.59963 19.1875H9.59963L9.2834 18.2388ZM7.03584 18.988L7.35206 19.9367L7.35206 19.9367L7.03584 18.988ZM10.1242 17.8485L9.52193 17.0502L9.52192 17.0502L10.1242 17.8485ZM9.8091 18.0432L9.36439 17.1476V17.1476L9.8091 18.0432ZM18.9637 7.11191L18.0676 7.55593V7.55593L18.9637 7.11191ZM18.9637 8.88797L18.0676 8.44396V8.44396L18.9637 8.88797ZM15.112 5.03633L15.556 5.93235V5.93235L15.112 5.03633ZM16.8881 5.03633L16.4441 5.93235V5.93235L16.8881 5.03633ZM5.95676 14.1909L6.85244 14.6356L6.85244 14.6356L5.95676 14.1909ZM6.15148 13.8758L5.35317 13.2736L5.35317 13.2736L6.15148 13.8758ZM4.63928 18.7547L3.69738 19.0906L4.63928 18.7547ZM5.24531 19.3607L4.90943 20.3026L4.90943 20.3026L5.24531 19.3607ZM13.7072 6.29287C13.3166 5.90234 12.6835 5.90234 12.2929 6.29287C11.9024 6.68339 11.9024 7.31656 12.2929 7.70708L13.7072 6.29287ZM16.2929 11.7071C16.6835 12.0976 17.3166 12.0976 17.7072 11.7071C18.0977 11.3166 18.0977 10.6834 17.7072 10.2929L16.2929 11.7071ZM5.96066 17.2804L6.70985 15.0328L4.81248 14.4004L4.0633 16.6479L5.96066 17.2804ZM7.24132 14.1729L14.7072 6.70705L13.2929 5.29283L5.8271 12.7587L7.24132 14.1729ZM17.2929 9.29284L9.8271 16.7587L11.2413 18.1729L18.7072 10.707L17.2929 9.29284ZM8.96717 17.2901L6.71961 18.0393L7.35206 19.9367L9.59963 19.1875L8.96717 17.2901ZM9.8271 16.7587C9.60902 16.9768 9.56482 17.0178 9.52193 17.0502L10.7264 18.6468C10.906 18.5114 11.061 18.3532 11.2413 18.1729L9.8271 16.7587ZM9.59963 19.1875C9.84158 19.1069 10.0524 19.0389 10.2538 18.9389L9.36439 17.1476C9.31627 17.1714 9.25977 17.1926 8.96717 17.2901L9.59963 19.1875ZM9.52192 17.0502C9.47254 17.0875 9.4198 17.12 9.36439 17.1476L10.2538 18.9389C10.42 18.8564 10.5782 18.7586 10.7264 18.6468L9.52192 17.0502ZM17.2929 6.70705C17.8953 7.30939 18.0131 7.44595 18.0676 7.55593L19.8597 6.6679C19.6227 6.18969 19.1953 5.78099 18.7072 5.29284L17.2929 6.70705ZM18.7072 10.707C19.1953 10.2189 19.6227 9.8102 19.8597 9.33199L18.0676 8.44396C18.0131 8.55394 17.8953 8.69049 17.2929 9.29284L18.7072 10.707ZM18.0676 7.55593C18.2063 7.8357 18.2063 8.16418 18.0676 8.44396L19.8597 9.33199C20.2756 8.49266 20.2756 7.50723 19.8597 6.66789L18.0676 7.55593ZM14.7072 6.70705C15.3095 6.10471 15.4461 5.98685 15.556 5.93235L14.668 4.14031C14.1898 4.37728 13.7811 4.80468 13.2929 5.29283L14.7072 6.70705ZM18.7072 5.29284C18.219 4.80468 17.8103 4.37728 17.3321 4.14031L16.4441 5.93235C16.554 5.98685 16.6906 6.10471 17.2929 6.70705L18.7072 5.29284ZM15.556 5.93235C15.8358 5.79371 16.1643 5.79371 16.4441 5.93235L17.3321 4.14031C16.4928 3.72439 15.5073 3.72439 14.668 4.14031L15.556 5.93235ZM6.70985 15.0328C6.80738 14.7402 6.82854 14.6837 6.85244 14.6356L5.06108 13.7462C4.96106 13.9476 4.89313 14.1584 4.81248 14.4004L6.70985 15.0328ZM5.82711 12.7587C5.64676 12.939 5.48862 13.094 5.35317 13.2736L6.9498 14.4781C6.98215 14.4352 7.02323 14.391 7.24132 14.1729L5.82711 12.7587ZM6.85244 14.6356C6.87995 14.5802 6.91254 14.5275 6.9498 14.4781L5.35317 13.2736C5.2414 13.4217 5.14362 13.58 5.06108 13.7462L6.85244 14.6356ZM4.0633 16.6479C3.90675 17.1176 3.76644 17.5353 3.68656 17.8752C3.61018 18.2003 3.53801 18.6436 3.69738 19.0906L5.58119 18.4188C5.6247 18.5408 5.57603 18.5775 5.63353 18.3328C5.68755 18.1029 5.79151 17.7878 5.96066 17.2804L4.0633 16.6479ZM6.71961 18.0393C6.21215 18.2085 5.89711 18.3124 5.66724 18.3665C5.42254 18.424 5.45916 18.3753 5.58119 18.4188L4.90943 20.3026C5.35634 20.462 5.79968 20.3898 6.12475 20.3134C6.46465 20.2336 6.88243 20.0932 7.35206 19.9367L6.71961 18.0393ZM3.69738 19.0906C3.89902 19.656 4.34398 20.101 4.90943 20.3026L5.58119 18.4188L5.58119 18.4188L3.69738 19.0906ZM12.2929 7.70708L16.2929 11.7071L17.7072 10.2929L13.7072 6.29287L12.2929 7.70708Z" fill="#424242"/>
+                </svg>
+            </a>
+            <a class="btn btn-default" href="?view_mode=intercom_delete&id=[#ID#]">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M18 6L6 18M18 18L6 6.00001" stroke="#424242" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+            </a>
+        </div>
+    [#end intercoms#]
+</div>

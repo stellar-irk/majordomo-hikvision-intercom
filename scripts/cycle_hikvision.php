@@ -12,11 +12,8 @@ foreach ($rec as &$item) $item['LATEST_POLL'] = time();
 unset($item);
 
 echo date("H:i:s") . " running " . basename(__FILE__) . PHP_EOL;
-//echo "<pre>".print_r($rec, true)."</pre>";
 
-//echo("<table border='1'>");
 while (1)
-//for($i=0;$i<10;$i++)
 {
     setGlobal((str_replace('.php', '', basename(__FILE__))) . 'Run', time(), 1);
 
@@ -25,7 +22,7 @@ while (1)
         if ($ts - $item['LATEST_POLL'] >= $item['POLL_RATE']) {
             $res = $hikvision->getIntercomCallStatus($item['ADDRESS'], $item['USERNAME'], $item['PASSWORD']);
             if (!isset($res->error)) {
-                $oldvalue = $item['STATUS'];
+                $oldvalue = SQLSelectOne("select `STATUS` from `hikvision` where `ID` = ".$item['ID'])['STATUS'];
                 $newvalue = $res->CallStatus->status;
 
                 if ($oldvalue <> $newvalue) SQLExec("update `hikvision` set `STATUS`='".$newvalue."' where `ID`=".$item['ID']);
@@ -40,11 +37,11 @@ while (1)
                 if ($item['LINKED_PROPERTY'] && oldvalue <> $newvalue)
                     SetGlobal($item['LINKED_OBJECT'].'.'.$item['LINKED_PROPERTY'], $newvalue, 0);
 
-               /* echo "<tr><td>".$item['ID']."</td>".
-                    "<td>".$ts."</td>".
-                    "<td>".$item['LATEST_POLL']."</td>".
-                    "<td>".date("H:i:s")."</td>".
-                    "<td><pre>".print_r($res, true)."</pre></td></tr>";*/
+               /* echo $item['ADDRESS']."\t".
+                    $oldvalue."\t".
+                    $newvalue."\t".
+                    date("H:i:s")."\r\n";
+                    //print_r($res, true)."</pre></td></tr>";*/
                 $item['LATEST_POLL'] = time();
             }
         }
@@ -58,5 +55,4 @@ while (1)
     sleep(1);
 }
 $db->Disconnect();
-//echo("</table>");
 DebMes("Unexpected close of cycle: " . basename(__FILE__));

@@ -521,6 +521,9 @@ class hikvision extends module {
      */
     function install($data='') {
         parent::install();
+
+        sg('cycle_hikvisionRun', '');
+        sg('cycle_hikvisionControl', 'restart');
     }
 
     /**

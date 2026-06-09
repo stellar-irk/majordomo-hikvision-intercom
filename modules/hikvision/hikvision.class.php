@@ -445,6 +445,8 @@ class hikvision extends module {
             if ($dbrecord['LINKED_OBJECT'] && $dbrecord['LINKED_PROPERTY']) {
                 addLinkedProperty($dbrecord['LINKED_OBJECT'], $dbrecord['LINKED_PROPERTY'], $this->name);
             }
+            // restart the cycle to raise new settings
+            sg('cycle_hikvisionControl', 'restart');
         }
         echo json_encode($intercom);
     }
